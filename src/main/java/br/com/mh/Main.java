@@ -75,7 +75,7 @@ public class Main {
                     action = formatEvent("set to Public", repoName, daysAgo);
                     break;
                 default:
-                    action = formatEvent(object.get("type").getAsString(), object.get("repo").getAsJsonObject().get("name").getAsString(), daysAgo);
+                    action = formatEvent(type.replace("Event", ""), repoName, daysAgo);
                     break;
             }
             System.out.println(action);
