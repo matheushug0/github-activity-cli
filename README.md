@@ -1,7 +1,6 @@
 # <img src="https://roadmap.sh/images/gifs/rocket.gif" width="25px"> Github User Activity CLI
-
 ![GitHub](https://img.shields.io/badge/GitHub-User%20Activity%20CLI-blue?logo=github&style=flat-square)
-
+---
 Aplicação com interface de linha de comando CLI(<i>Command Line Interface</i>) para busca e exibição de atividades recentes de um usuário no Github.
 <br>Projeto sugerido pelo [Roadmap.sh - **Backend Developer**](https://roadmap.sh/projects/github-user-activity).
 ---
