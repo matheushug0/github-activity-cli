@@ -14,7 +14,7 @@ import java.time.temporal.ChronoUnit;
 public class Main {
     public static void main(String[] args) {
         if (args.length < 1) {
-            System.out.println("USAGE: java -jar main.jar <url>");
+            System.out.println("Correct Usage: java -jar github-activity-cli-1.0.jar <username>");
         }
         fetchActivity(args[0].strip());
     }
@@ -32,7 +32,7 @@ public class Main {
             if (response.statusCode() != 200) {
                 Gson gson = new Gson();
                 JsonObject jsonObject = gson.fromJson(response.body(), JsonObject.class);
-                String responseBody = String.format("Status code: %s | User %s",jsonObject.get("status").getAsString(), jsonObject.get("message").getAsString());
+                String responseBody = String.format("Status code: %s | User %s", jsonObject.get("status").getAsString(), jsonObject.get("message").getAsString());
                 System.err.println(responseBody);
             } else {
                 displayActivity(response);
@@ -60,7 +60,7 @@ public class Main {
             switch (type) {
                 case "PushEvent":
                     int commitCount = object.get("payload").getAsJsonObject().get("commits").getAsJsonArray().size();
-                    action = String.format("Pushed %d commits to %s %s", commitCount, repoName, daysAgo);
+                    action = String.format("Pushed %d %s to %s %s", commitCount, commitCount == 1 ? "commit" : "commits", repoName, daysAgo);
                     break;
                 case "IssuesEvent":
                     action = formatEvent(object.get("payload").getAsJsonObject().get("action").getAsString() + " a new Issue", repoName, daysAgo);
