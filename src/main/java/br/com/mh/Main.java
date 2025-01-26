@@ -9,6 +9,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 
 public class Main {
     public static void main(String[] args) {
@@ -18,7 +19,7 @@ public class Main {
         fetchActivity(args[0].strip());
     }
 
-    static void fetchActivity(String username){
+    static void fetchActivity(String username) {
         final String GITHUB_API_URL_TEMPLATE = "https://api.github.com/users/%s/events";
         final String DAYS_AGO_FORMAT = "%d days ago";
         HttpClient client = HttpClient.newHttpClient(); // HttpClient to send and receive requests
@@ -29,30 +30,69 @@ public class Main {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() != 200) {
-                System.out.println("Error: HTTP " + response.statusCode());
+                Gson gson = new Gson();
+                JsonObject jsonObject = gson.fromJson(response.body(), JsonObject.class);
+                String responseBody = String.format("Status code: %s | User %s",jsonObject.get("status").getAsString(), jsonObject.get("message").getAsString());
+                System.err.println(responseBody);
+            } else {
+                displayActivity(response);
             }
-            displayActivity(response);
         } catch (IOException e) {
             System.err.println("Network Error: Unable to connect to GitHub");
-            e.printStackTrace();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             System.err.println("Request was interrupted");
-            e.printStackTrace();
         }
     }
-    static void displayActivity(HttpResponse<String> response){
+
+    static void displayActivity(HttpResponse<String> response) {
         final OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
-        JsonParser parser = new JsonParser();
-        JsonArray jsonArray = parser.parse(response.body()).getAsJsonArray();
+        Gson gson = new Gson();
+        JsonArray jsonArray = gson.fromJson(response.body(), JsonArray.class);
 
         for (JsonElement jsonElement : jsonArray) {
             JsonObject object = jsonElement.getAsJsonObject();
-            System.out.println(object.get("type").getAsString());
+            String type = object.get("type").getAsString();
+            String action = "";
+            String repoName = getRepoName(object);
+            String daysAgo = parseDate(object.get("created_at").getAsString(), now) + " days ago";
+
+            switch (type) {
+                case "PushEvent":
+                    int commitCount = object.get("payload").getAsJsonObject().get("commits").getAsJsonArray().size();
+                    action = String.format("Pushed %d commits to %s %s", commitCount, repoName, daysAgo);
+                    break;
+                case "IssuesEvent":
+                    action = formatEvent(object.get("payload").getAsJsonObject().get("action").getAsString() + " a new Issue", repoName, daysAgo);
+                    break;
+                case "WatchEvent":
+                    action = formatEvent("starred", repoName, daysAgo);
+                    break;
+                case "CreateEvent":
+                    action = formatEvent("created", repoName, daysAgo);
+                    break;
+                case "PublicEvent":
+                    action = formatEvent("set to Public", repoName, daysAgo);
+                    break;
+                default:
+                    action = formatEvent(object.get("type").getAsString(), object.get("repo").getAsJsonObject().get("name").getAsString(), daysAgo);
+                    break;
+            }
+            System.out.println(action);
         }
 
     }
-    static long parseDate(String jsonDate, OffsetDateTime currentDateTime){
-        return 0;
+
+    static long parseDate(String jsonDate, OffsetDateTime currentDateTime) {
+        return ChronoUnit.DAYS.between(OffsetDateTime.parse(jsonDate), currentDateTime);
+    }
+
+    static String getRepoName(JsonObject object) {
+        return object.get("repo").getAsJsonObject().get("name").getAsString();
+    }
+
+    static String formatEvent(String type, String repoName, String daysAgo) {
+        type = type.replace(type.charAt(0), type.toUpperCase().charAt(0));
+        return String.format("%s in %s %s", type, repoName, daysAgo);
     }
 }
