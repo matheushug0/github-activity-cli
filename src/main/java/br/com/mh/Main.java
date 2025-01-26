@@ -55,7 +55,8 @@ public class Main {
             String type = object.get("type").getAsString();
             String action = "";
             String repoName = getRepoName(object);
-            String daysAgo = parseDate(object.get("created_at").getAsString(), now) + " days ago";
+            Long parseDate = parseDate(object.get("created_at").getAsString(), now);
+            String daysAgo = parseDate + (parseDate == 1 ? " day ago" : " days ago");
 
             switch (type) {
                 case "PushEvent":
