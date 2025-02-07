@@ -1,41 +1,41 @@
 # <img src="https://roadmap.sh/images/gifs/rocket.gif" width="25px"> Github Activity CLI
 
-Aplicação com interface de linha de comando CLI(<i>Command Line Interface</i>), que permite acompanhar as atividades recentes de um usuário no Github de forma rápida e prática, diretamente pelo terminal.
+A command-line interface (CLI) application that allows you to quickly and easily track a user's recent activities on Github, directly from the terminal.
 
-### Projeto sugerido pelo [Roadmap.sh - ](https://roadmap.sh/projects/github-user-activity)[**Backend Developer**](https://roadmap.sh/projects/github-user-activity).
+### Project suggested by [Roadmap.sh - ](https://roadmap.sh/projects/github-user-activity)[**Backend Developer**](https://roadmap.sh/projects/github-user-activity).
 
 ## Features
 
-- **Busca** por atividades recentes de um usuário específico do Github.
-- **Exibição** de eventos como **Push, Issues, Create, Watch** e outros.
-- **Tratamento** de exceções e errors de **request** para a **API do Github**
+- **Search** for recent activities of a specific Github user.
+- **Display** events such as **Push, Issues, Create, Watch**, and others.
+- **Exception handling** and error handling for **requests** to the **Github API**.
 
 ---
 
-## Funcionamento
+## How It Works
 
-1. A aplicação faz uma `HTTPRequest` ao endpoint `https://api.github.com/users/<USERNAME>/events`
-2. Caso a **response** da requisição seja válida, o `response.body()` é tratado pela biblioteca [Gson](https://github.com/google/gson), responsável pela conversão do JSON em um Array. Em caso de erro, a aplicação exibe mensagens adequadas para problemas como usuário inexistente, limite de requisições excedido ou falha de conexão.&#x20;
-3. Os dados obtidos são tratados de acordo com o `type` dos eventos, e formatados para exibição no terminal.
+1. The application makes an `HTTPRequest` to the endpoint `https://api.github.com/users/<USERNAME>/events`.
+2. If the **response** is valid, the `response.body()` is processed by the [Gson](https://github.com/google/gson) library, which converts the JSON into an Array. In case of errors, the application displays appropriate messages for issues such as non-existent users, exceeded request limits, or connection failures.
+3. The obtained data is processed according to the event `type` and formatted for display in the terminal.
 
 ---
 
-## Instalação
+## Installation
 
-1. Clone o repositório
+1. Clone the repository:
 
 ```bash
 git clone https://github.com/matheushug0/github-activity-cli.git
 cd github-activity-cli
 ```
 
-2. Faça o build do projeto Maven (versão mínima recomendada: 3.6.3)
+2. Build the Maven project (minimum recommended version: 3.6.3):
 
 ```bash
 mvn clean package install
 ```
 
-3. Execute a aplicação
+3. Run the application:
 
 ```bash
 java -jar target/github-activity-cli-1.0.jar <username>
@@ -43,13 +43,13 @@ java -jar target/github-activity-cli-1.0.jar <username>
 
 ---
 
-## Uso
+## Usage
 
 ```bash
 java -jar target/github-activity-cli-1.0.jar matheushug0
 ```
 
-### Exemplo de Saída:
+### Example Output:
 
 ```
 Pushed 3 commits to matheushug0/task-tracker 4 days ago
@@ -61,9 +61,8 @@ Created in matheushug0/imagesliteapi 34 days ago
 
 ---
 
-## Estrutura do Projeto
-
-Abaixo está a organização dos diretórios e arquivos do projeto:
+## Project Structure
+Below is the organization of the project's directories and files:
 
 ```
 github-activity
@@ -82,7 +81,7 @@ github-activity
 
 ---
 
-## Tecnologias Usadas
+## Technologies Used
 
 - **Java**
 - **Maven**
@@ -91,13 +90,13 @@ github-activity
 
 ---
 
-## Contato
+## Contact
 
 - [**LinkedIn**](https://www.linkedin.com/in/matheus-hugo/)
 
 ---
 
-## Referências
+## References
 
 - [Github API](https://docs.github.com/en/rest?apiVersion=2022-11-28)
 - [Gson](https://github.com/google/gson)
